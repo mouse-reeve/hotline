@@ -27,16 +27,18 @@ class Hotline(object):
         return self.script[endpoint].play()
 
 
-    def parse_keypress(self, keypress):
+    def parse_keypress(self, scene, keypress):
         ''' interpret phone input '''
         try:
-            number = int(keypress)
+            number = int(keypress) - 1
         except ValueError:
             pass
         try:
-            return self.options[number]
+            next_scene = self.script[scene].pick(number)
         except KeyError:
-            return False
+            return self.hangup()
+        else:
+            return self.script[next_scene].play()
 
     def hangup(self):
         ''' end a call '''
@@ -55,7 +57,6 @@ def validate_script_json(script_json):
             raise IndexError()
 
     return True
-
 
 
 class Scene(object):
@@ -81,4 +82,4 @@ class Scene(object):
 
     def pick(self, option_number):
         ''' select a menu option '''
-        return self.options[option_number][1]
+        return self.options[option_number]['next']
