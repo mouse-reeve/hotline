@@ -15,13 +15,8 @@ def call_endpoint(endpoint='start'):
 @app.route('/', methods=['POST'])
 @app.route('/<endpoint>', methods=['POST'])
 def receive_data(endpoint='start'):
-    data = request.get_json()
-    try:
-        keypress = data['digits']
-    except:
-        return redirect('/%s' % endpoint)
-    else:
-        return script.parse_keypress(keypress)
+    digits = request.form['Digits']
+    return script.parse_keypress(digits)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=3030)

@@ -38,6 +38,12 @@ class Hotline(object):
         except KeyError:
             return False
 
+    def hangup(self):
+        ''' end a call '''
+        r = twiml.Response()
+        r.hangup()
+        return str(r)
+
 
 def validate_script_json(script_json):
     ''' ensure that a script is properly formatted '''
