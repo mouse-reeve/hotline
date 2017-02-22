@@ -1,0 +1,17 @@
+{
+    "start": {
+        "text": "Welcome to this phone support menu.",
+        "options": [
+            {"text": "Press {} to repeat this message", "next": "start"},
+            {"text": "Press {} to hear more", "next": "more"}
+        ]
+    },
+    "more": {
+        "text": "This is the next menu.",
+        "options": [
+            {"text": "Press {} to return to the main menu", "next": "start"},
+            {"text": "Press {} to repeat this message", "next": "more"}
+        ]
+    }
+}
+
