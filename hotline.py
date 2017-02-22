@@ -76,7 +76,7 @@ class Scene(object):
         text = self.text
         r = twiml.Response()
         r.say(text)
-        with r.gather(numDigits=1, method='GET') as g:
+        with r.gather(numDigits=1, method='POST') as g:
             g.say(', '.join([o['text'] for o in self.options]))
         return str(r)
 
