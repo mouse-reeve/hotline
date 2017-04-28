@@ -32,19 +32,35 @@ class Hotline(object):
         try:
             number = int(keypress) - 1
         except ValueError:
-            pass
-        try:
-            next_scene = self.script[scene].pick(number)
-        except KeyError:
-            return self.hangup()
-        else:
-            return self.script[next_scene].play()
+            # if it's an invalid input, replay this scene
+            return self.script[scene].play()
 
-    def hangup(self):
-        ''' end a call '''
-        r = twiml.Response()
-        r.hangup()
-        return str(r)
+        try:
+            option = self.options[number]
+        except KeyError:
+            # they picked a different number, replay this scene
+            return self.script[scene].play()
+
+        if 'next' in option:
+            # route to the selected next scene
+            next_scene = option['next']
+            return self.script[next_scene].play()
+        elif 'dial' in option:
+            return dial(option['dail'])
+        return hangup()
+
+
+def dial(number):
+    ''' transfer to an outgoing call '''
+    r = twiml.Response()
+    r.dial(number)
+    return str(r)
+
+def hangup():
+    ''' end a call '''
+    r = twiml.Response()
+    r.hangup()
+    return str(r)
 
 
 def validate_script_json(script_json):
@@ -85,11 +101,12 @@ class Scene(object):
                 g.say(', '.join([o['text'] for o in self.options]))
         return str(r)
 
-    def pick(self, option_number):
-        ''' select a menu option '''
-        return self.options[option_number]['next']
 
 def format_html_option(option):
     ''' create links for html version of hotline '''
-    return '<li><a href="/' + option['next'] + \
-            '?mode=html">' + option['text'] + '</a></li>'
+    if 'next' in option:
+        link = '<a href="' + option['next'] + '?mode=html">' + \
+                option['text'] + '</a>'
+    else:
+        link = option['text']
+    return '<li>' + link + '</li>'

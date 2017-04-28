@@ -3,14 +3,16 @@
         "text": "Welcome to this phone support menu.",
         "options": [
             {"text": "Press {} to repeat this message", "next": "start"},
-            {"text": "Press {} to hear more", "next": "more"}
+            {"text": "Press {} to hear more", "next": "more"},
+            {"text": "Press {} to end this call"}
         ]
     },
     "more": {
         "text": "This is the next menu.",
         "options": [
             {"text": "Press {} to return to the main menu", "next": "start"},
-            {"text": "Press {} to repeat this message", "next": "more"}
+            {"text": "Press {} to repeat this message", "next": "more"},
+            {"text": "Press {} to call comcast", "dail": "800-391-3000"}
         ]
     }
 }
