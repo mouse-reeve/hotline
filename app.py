@@ -10,7 +10,8 @@ script = Hotline(json.load(file('script.json')))
 @app.route('/<endpoint>', methods=['GET'])
 def call_endpoint(endpoint='start'):
     ''' receive a call or play a scene '''
-    return script.run(endpoint)
+    mode = request.args.get('mode')
+    return script.run(endpoint, mode=mode)
 
 
 @app.route('/', methods=['POST'])

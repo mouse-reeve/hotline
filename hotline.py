@@ -22,9 +22,9 @@ class Hotline(object):
                           options=scene_json['options'])
             self.script[key] = scene
 
-    def run(self, endpoint='start'):
+    def run(self, endpoint='start', mode='twiml'):
         ''' begin call '''
-        return self.script[endpoint].play()
+        return self.script[endpoint].play(mode)
 
 
     def parse_keypress(self, scene, keypress):
@@ -71,15 +71,25 @@ class Scene(object):
         for (i, option) in enumerate(options):
             option['text'] = re.sub('{}', str(i+1), option['text'])
 
-    def play(self):
+    def play(self, mode):
         ''' generate TWiML for the scene '''
         text = self.text
-        r = twiml.Response()
-        r.say(text)
-        with r.gather(numDigits=1, method='POST') as g:
-            g.say(', '.join([o['text'] for o in self.options]))
+        if mode == 'html':
+            r = '<p>' + text + '</p> <ul>'
+            r += ''.join(format_html_option(o) for o in self.options)
+            r += '</ul>'
+        else:
+            r = twiml.Response()
+            r.say(text)
+            with r.gather(numDigits=1, method='POST') as g:
+                g.say(', '.join([o['text'] for o in self.options]))
         return str(r)
 
     def pick(self, option_number):
         ''' select a menu option '''
         return self.options[option_number]['next']
+
+def format_html_option(option):
+    ''' create links for html version of hotline '''
+    return '<li><a href="/' + option['next'] + \
+            '?mode=html">' + option['text'] + '</a></li>'
