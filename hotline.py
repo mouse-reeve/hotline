@@ -113,7 +113,9 @@ class Scene(object):
             if error:
                 r.say(self.error_message, voice=voice)
             r.say(text, voice=voice)
-            with r.gather(numDigits=1, method='POST') as g:
+
+            path = '/' + self.scene_id
+            with r.gather(numDigits=1, method='POST', action=path) as g:
                 g.say(', '.join([o['text'] for o in self.options]), voice=voice)
         return str(r)
 
