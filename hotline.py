@@ -110,12 +110,12 @@ class Scene(object):
             r += '</ul>'
         else:
             r = twiml.Response()
-            if error:
-                r.say(self.error_message, voice=voice)
-            r.say(text, voice=voice)
 
             path = '/' + self.scene_id
             with r.gather(numDigits=1, method='POST', action=path) as g:
+                if error:
+                    g.say(self.error_message, voice=voice)
+                g.say(text, voice=voice)
                 g.say(', '.join([o['text'] for o in self.options]), voice=voice)
         return str(r)
 
