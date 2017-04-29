@@ -58,7 +58,7 @@ class Hotline(object):
             next_scene = option['next']
             return self.script[next_scene].play()
         elif 'dial' in option:
-            return self.dial(option['dail'])
+            return self.dial(option['dial'])
         return self.hangup()
 
 
