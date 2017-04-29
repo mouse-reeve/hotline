@@ -34,7 +34,7 @@ class Hotline(object):
 
     def run(self, endpoint='start', mode='twiml'):
         ''' begin call '''
-        return self.script[endpoint].play(mode)
+        return self.script[endpoint].play(mode=mode)
 
 
     def parse_keypress(self, scene, keypress):
@@ -99,7 +99,7 @@ class Scene(object):
         for (i, option) in enumerate(options):
             option['text'] = re.sub('{}', str(i+1), option['text'])
 
-    def play(self, mode, error=False):
+    def play(self, mode='twiml', error=False):
         ''' generate TWiML for the scene '''
         text = self.text
         if mode == 'html':
