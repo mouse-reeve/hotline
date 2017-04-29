@@ -47,7 +47,7 @@ class Hotline(object):
             return self.script[scene].play(error=True)
 
         try:
-            option = self.options[number]
+            option = self.script[scene].options[number]
         except KeyError:
             # they picked a different number, replay this scene
             return self.script[scene].play(error=True)
