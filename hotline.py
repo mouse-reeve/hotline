@@ -2,6 +2,7 @@
 import re
 from twilio import twiml
 
+voice = 'alice'
 class Hotline(object):
     ''' create a hotline object '''
     script = {}
@@ -71,7 +72,7 @@ class Hotline(object):
     def hangup(self):
         ''' end a call '''
         r = twiml.Response()
-        r.say(self.hangup_message)
+        r.say(self.hangup_message, voice=voice)
         r.hangup()
         return str(r)
 
@@ -110,10 +111,10 @@ class Scene(object):
         else:
             r = twiml.Response()
             if error:
-                r.say(self.error_message)
-            r.say(text)
+                r.say(self.error_message, voice=voice)
+            r.say(text, voice=voice)
             with r.gather(numDigits=1, method='POST') as g:
-                g.say(', '.join([o['text'] for o in self.options]))
+                g.say(', '.join([o['text'] for o in self.options]), voice=voice)
         return str(r)
 
 
