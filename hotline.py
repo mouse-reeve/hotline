@@ -45,13 +45,13 @@ class Hotline(object):
         except ValueError:
             # not sure how this would happen, but I guess
             # if it's an invalid input, replay this scene
-            return self.script[scene].play(error=True)
+            return self.script[scene].play(error=self.error_message)
 
         try:
             option = self.script[scene].options[number]
         except IndexError:
             # they picked a different number, replay this scene
-            return self.script[scene].play(error=True)
+            return self.script[scene].play(error=self.error_message)
 
         if 'next' in option:
             # route to the selected next scene
@@ -104,7 +104,7 @@ class Scene(object):
         ''' generate TWiML for the scene '''
         text = self.text
         if mode == 'html':
-            r = '<p>' + self.error_message + '</p>' if error else ''
+            r = '<p>' + error + '</p>' if error else ''
             r += '<p>' + text + '</p> <ul>'
             r += ''.join(format_html_option(o) for o in self.options)
             r += '</ul>'
@@ -114,7 +114,7 @@ class Scene(object):
             path = '/' + self.scene_id
             with r.gather(numDigits=1, method='POST', action=path) as g:
                 if error:
-                    g.say(self.error_message, voice=voice)
+                    g.say(error, voice=voice)
                 g.say(text, voice=voice)
                 g.say(', '.join([o['text'] for o in self.options]), voice=voice)
         return str(r)
