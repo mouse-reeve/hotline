@@ -117,6 +117,8 @@ class Scene(object):
                     g.say(error, voice=voice)
                 g.say(text, voice=voice)
                 g.say(', '.join([o['text'] for o in self.options]), voice=voice)
+                g.pause()
+            r.redirect(path)
         return str(r)
 
 
