@@ -44,7 +44,7 @@ class Hotline(object):
         ''' interpret phone input '''
         try:
             number = int(keypress) - 1
-            if number < 1:
+            if number < 0:
                 raise ValueError
         except ValueError:
             return self.script[scene].play(error=self.error_message)
