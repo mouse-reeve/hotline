@@ -9,18 +9,20 @@ class Hotline(object):
     endpoints = []
     hangup_message = ''
     error_message = ''
+    dial_message = ''
 
     def __init__(self, script_json):
         self.build_from_json(script_json)
 
     def build_from_json(self, script_json):
         ''' create a script from a json file '''
-        #validate_script_json(script_json)
+        validate_script_json(script_json)
 
         # configure
         if 'settings' in script_json:
             self.hangup_message = script_json['settings'].get('hangup-message')
             self.error_message = script_json['settings'].get('error-message')
+            self.dial_message = script_json['settings'].get('dial-message')
 
         # add each scene
         for (key, scene_json) in script_json.items():
@@ -42,9 +44,9 @@ class Hotline(object):
         ''' interpret phone input '''
         try:
             number = int(keypress) - 1
+            if number < 1:
+                raise ValueError
         except ValueError:
-            # not sure how this would happen, but I guess
-            # if it's an invalid input, replay this scene
             return self.script[scene].play(error=self.error_message)
 
         try:
@@ -65,6 +67,7 @@ class Hotline(object):
     def dial(self, number):
         ''' transfer to an outgoing call '''
         r = twiml.Response()
+        r.say(self.dial_message, voice=voice)
         r.dial(number)
         return str(r)
 
@@ -79,12 +82,31 @@ class Hotline(object):
 
 def validate_script_json(script_json):
     ''' ensure that a script is properly formatted '''
-    keys = script_json.keys()
-    options = [k['next'] for k in s['options'] for s in script_json.values()]
-    options = list(set(options))
-    for key in options:
-        if not key in keys:
-            raise IndexError()
+
+    # check that every "next" leads somewhere
+    scene_ids = script_json.keys()
+    scene_ids.remove('settings')
+
+    nexts = []
+    hangups = 0
+    for scene in script_json.values():
+        if 'options' in scene:
+            nexts += [n.get('next') for n in scene['options']]
+        else:
+            hangups += 1
+
+    nexts = list(set(nexts))
+
+    unused_scenes = [s for s in scene_ids if not s in nexts and s]
+    if unused_scenes:
+        print 'WARNING: These scenes are inaccessible: %s' % unused_scenes
+
+    invalid_nexts = [n for n in nexts if not n in scene_ids and n]
+    if invalid_nexts:
+        print 'ERROR: These next links are unmatched: %s' % invalid_nexts
+
+    print 'Number of ways to end call: %d' % hangups
+
     return True
 
 

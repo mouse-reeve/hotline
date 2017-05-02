@@ -1,4 +1,8 @@
 {
+    "settings": {
+        "hangup-message": "Thank you for calling. Goodbye.",
+        "error-message": "Please select one of the given options."
+    },
     "start": {
         "text": "Welcome to this phone support menu.",
         "options": [
