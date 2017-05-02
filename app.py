@@ -18,7 +18,7 @@ def call_endpoint(endpoint='start'):
 @app.route('/<endpoint>', methods=['POST'])
 def receive_data(endpoint='start'):
     ''' process a keypress during a phone call '''
-    digits = request.form['Digits']
+    digits = request.form.get('Digits', 0)
     return script.parse_keypress(endpoint, digits)
 
 if __name__ == '__main__':
